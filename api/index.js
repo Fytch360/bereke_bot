@@ -7,24 +7,61 @@ const stage = new Scenes.Stage();
 
 // Main menu keyboard
 const mainMenu = Markup.keyboard([
-  ['1) Ask ART', '2) Ask Konkurs'],
-  ['3) Feedback']
+  ['1) Задать вопрос командам в ART', '2) Задать вопрос конкурсантам'],
+  ['3) Оставить ОС по организации мероприятия']
 ]).resize();
+
 
 // --- Scene for Ask ART ---
 const artScene = new Scenes.WizardScene(
   'ART_SCENE',
   async (ctx) => {
-    await ctx.reply('Choose an option:', Markup.keyboard(['A', 'B', 'C', 'D']).resize());
+    await ctx.reply('Выберите вариант:', Markup.keyboard([
+      'ART ТРБ BAU', 
+      'ART ТРБ Premium', 
+    'ART ВЭД', 
+    'ART БММБ Daily Banking для бизнеса',
+    'ART БММБ Business Platform',
+    'ART Кредитной ценности',
+    'ART Индустриальной разработки',
+    'ART CRM',
+    'ART IT Run',
+    'ART ML&AI',
+    'ART DATA',
+    'VS "ЦАГ"',
+    'VS " Цифровой Факторинг"',
+    'Интернет эквайринг',
+    'VS «Класс. кредит-е ЮЛ и ИП»',
+    'VS "Collection"',
+    'Операционные процессы',
+    'Сайт Банка',
+  ]).resize());
     return ctx.wizard.next();
   },
   async (ctx) => {
     const option = ctx.message.text;
-    if (!['A', 'B', 'C', 'D'].includes(option)) {
-      return ctx.reply('Please choose A, B, C, or D.');
+    if (![  'ART ТРБ BAU', 
+    'ART ТРБ Premium', 
+  'ART ВЭД', 
+  'ART БММБ Daily Banking для бизнеса',
+  'ART БММБ Business Platform',
+  'ART Кредитной ценности',
+  'ART Индустриальной разработки',
+  'ART CRM',
+  'ART IT Run',
+  'ART ML&AI',
+  'ART DATA',
+  'VS "ЦАГ"',
+  'VS " Цифровой Факторинг"',
+  'Интернет эквайринг',
+  'VS «Класс. кредит-е ЮЛ и ИП»',
+  'VS "Collection"',
+  'Операционные процессы',
+  'Сайт Банка',].includes(option)) {
+      return ctx.reply('Выберите вариант');
     }
     ctx.wizard.state.option = option;
-    await ctx.reply('Enter your custom text:');
+    await ctx.reply('Задайте ваш вопрос:');
     return ctx.wizard.next();
   },
   async (ctx) => {
@@ -55,16 +92,60 @@ stage.register(artScene);
 const konkursScene = new Scenes.WizardScene(
   'KONKURS_SCENE',
   async (ctx) => {
-    await ctx.reply('Choose an option:', Markup.keyboard(['A', 'B', 'C', 'D']).resize());
+    await ctx.reply('Выберите вариант:', Markup.keyboard([
+      'Правовой модуль - юрист в цифре',
+       'Факторинг-эксперт - быстрые решения', 
+       'Synergy Team - порядок вместо хаоса', 
+       'Premium Digital Office - банкинг нового уровня',
+       'FX TRB - премиум-сервис: быстро и удобно',
+       'Лояльность ТРБ - забота, которую чувствуешь',
+       'B-Invest - AI-инвестиционный помощник',
+       'Контакт-центр & CRM - скорость + забота',
+       'ЦК ВЭД & CRM - кастомный подход к каждому',
+       'LLM-бот - умный помощник, который понимает',
+       'Online Onboarding - лёгкий вход в бизнес',
+       'Core Platform Team - база цифрового будущего',
+       'Core Feature Team - лёгкое переключение компаний',
+       'Переводы в тенге - просто и быстро',
+       'Валютные договора - битва титанов',
+       'Валютный контроль - скорость и гибкость',
+       'Гос.сервисы - автоматические уведомления ',
+       'Депозиты - капитализация без боли',
+       'Конструктор кредитов - под клиента',
+       'Сервис отказов - объяснит "почему"',
+       'Скоринг решений - ПКБ BML',
+       'AI оператор - ИИ работает, мы чилим',
+      ]).resize());
     return ctx.wizard.next();
   },
   async (ctx) => {
     const option = ctx.message.text;
-    if (!['A', 'B', 'C', 'D'].includes(option)) {
-      return ctx.reply('Please choose A, B, C, or D.');
+    if (![ 'Правовой модуль - юрист в цифре',
+    'Факторинг-эксперт - быстрые решения', 
+    'Synergy Team - порядок вместо хаоса', 
+    'Premium Digital Office - банкинг нового уровня',
+    'FX TRB - премиум-сервис: быстро и удобно',
+    'Лояльность ТРБ - забота, которую чувствуешь',
+    'B-Invest - AI-инвестиционный помощник',
+    'Контакт-центр & CRM - скорость + забота',
+    'ЦК ВЭД & CRM - кастомный подход к каждому',
+    'LLM-бот - умный помощник, который понимает',
+    'Online Onboarding - лёгкий вход в бизнес',
+    'Core Platform Team - база цифрового будущего',
+    'Core Feature Team - лёгкое переключение компаний',
+    'Переводы в тенге - просто и быстро',
+    'Валютные договора - битва титанов',
+    'Валютный контроль - скорость и гибкость',
+    'Гос.сервисы - автоматические уведомления ',
+    'Депозиты - капитализация без боли',
+    'Конструктор кредитов - под клиента',
+    'Сервис отказов - объяснит "почему"',
+    'Скоринг решений - ПКБ BML',
+    'AI оператор - ИИ работает, мы чилим',].includes(option)) {
+      return ctx.reply('Выберите вариант');
     }
     ctx.wizard.state.option = option;
-    await ctx.reply('Enter your custom text:');
+    await ctx.reply('Задайте вопрос:');
     return ctx.wizard.next();
   },
   async (ctx) => {
@@ -92,7 +173,7 @@ stage.register(konkursScene);
 
 // --- Scene for Feedback (simple) ---
 const feedbackScene = new Scenes.BaseScene('FEEDBACK_SCENE');
-feedbackScene.enter((ctx) => ctx.reply('Enter your feedback:'));
+feedbackScene.enter((ctx) => ctx.reply('Дайте вашу ОС:'));
 feedbackScene.on('text', async (ctx) => {
   const message = ctx.message.text;
   const user = ctx.from;
@@ -122,9 +203,9 @@ bot.use(stage.middleware());
 bot.start((ctx) => ctx.reply('Welcome! Choose an option:', mainMenu));
 
 // Handle menu selections
-bot.hears('1) Ask ART', (ctx) => ctx.scene.enter('ART_SCENE'));
-bot.hears('2) Ask Konkurs', (ctx) => ctx.scene.enter('KONKURS_SCENE'));
-bot.hears('3) Feedback', (ctx) => ctx.scene.enter('FEEDBACK_SCENE'));
+bot.hears('1) Задать вопрос командам в ART', (ctx) => ctx.scene.enter('ART_SCENE'));
+bot.hears('2) Задать вопрос конкурсантам', (ctx) => ctx.scene.enter('KONKURS_SCENE'));
+bot.hears('3) Оставить ОС по организации мероприятия', (ctx) => ctx.scene.enter('FEEDBACK_SCENE'));
 
 // Optional: Set webhook on startup (safe for cold starts)
 bot.telegram.setWebhook(`https://bereke-bot.vercel.app/bot`);  // Your domain + /bot path
