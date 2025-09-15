@@ -1,13 +1,6 @@
 require('dotenv').config();
 const { Telegraf, Markup, session, Scenes } = require('telegraf');
-const axios = require('axios'); // Install with `npm install axios` for HTTP requests to n8n
-//***** */
-const express = require('express');
-const app = express();
-app.use(express.json());
-app.use(bot.webhookCallback('/bot'));
-app.listen(3000, () => console.log('Server running'));
-bot.telegram.setWebhook('https://bereke-bot.vercel.app');
+const axios = require('axios');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const stage = new Scenes.Stage();
@@ -133,6 +126,27 @@ bot.hears('1) Ask ART', (ctx) => ctx.scene.enter('ART_SCENE'));
 bot.hears('2) Ask Konkurs', (ctx) => ctx.scene.enter('KONKURS_SCENE'));
 bot.hears('3) Feedback', (ctx) => ctx.scene.enter('FEEDBACK_SCENE'));
 
-// Launch bot (polling for local testing)
-bot.launch();
-console.log('Bot is running...');
+// Optional: Set webhook on startup (safe for cold starts)
+bot.telegram.setWebhook(`https://bereke-bot.vercel.app/bot`);  // Your domain + /bot path
+
+// Vercel serverless handler
+module.exports = async (req, res) => {
+  // Use Telegraf's built-in webhook callback (handles /bot path via vercel.json)
+  const express = require('express');
+  const app = express();
+  app.use(express.json());
+  app.use(bot.webhookCallback('/bot'));
+
+  // For direct handling (alternative to Express if you want lighter)
+  if (req.method === 'POST') {
+    try {
+      await bot.handleUpdate(req.body);
+      res.status(200).send('OK');
+    } catch (err) {
+      console.error('Error handling update:', err);
+      res.status(500).send('Internal Error');
+    }
+  } else {
+    res.status(200).send('Telegram Bot is running via webhook!');
+  }
+};
