@@ -77,7 +77,7 @@ const artScene = new Scenes.WizardScene(
     };
     // Send to n8n webhook (replace with your n8n URL later)
     try {
-      await axios.post('YOUR_N8N_WEBHOOK_URL_HERE', data);
+      await axios.post('https://fytch.app.n8n.cloud/webhook/telegram-bot-data', data);
     } catch (error) {
       console.error('Error sending to n8n:', error);
     }
