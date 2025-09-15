@@ -9,7 +9,6 @@ app.use(bot.webhookCallback('/bot'));
 app.listen(3000, () => console.log('Server running'));
 bot.telegram.setWebhook('https://bereke-bot.vercel.app');
 
-
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const stage = new Scenes.Stage();
 
