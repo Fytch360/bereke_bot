@@ -160,7 +160,7 @@ const konkursScene = new Scenes.WizardScene(
       type: 'KONKURS'
     };
     try {
-      await axios.post('YOUR_N8N_WEBHOOK_URL_HERE', data);
+      await axios.post('https://fytch.app.n8n.cloud/webhook/telegram-bot-data', data);
     } catch (error) {
       console.error('Error sending to n8n:', error);
     }
@@ -185,7 +185,7 @@ feedbackScene.on('text', async (ctx) => {
     type: 'FEEDBACK'
   };
   try {
-    await axios.post('YOUR_N8N_WEBHOOK_URL_HERE', data);
+    await axios.post('https://fytch.app.n8n.cloud/webhook/telegram-bot-data', data);
   } catch (error) {
     console.error('Error sending to n8n:', error);
   }
