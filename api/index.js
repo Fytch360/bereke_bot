@@ -11,37 +11,10 @@ const mainMenu = Markup.keyboard([
   ['3) Оставить ОС по организации мероприятия']
 ]).resize();
 
-
-// --- Scene for Ask ART ---
-const artScene = new Scenes.WizardScene(
-  'ART_SCENE',
-  async (ctx) => {
-    await ctx.reply('Выберите вариант:', Markup.keyboard([
-      'ART ТРБ BAU', 
-      'ART ТРБ Premium', 
-    'ART ВЭД', 
-    'ART БММБ Daily Banking для бизнеса',
-    'ART БММБ Business Platform',
-    'ART Кредитной ценности',
-    'ART Индустриальной разработки',
-    'ART CRM',
-    'ART IT Run',
-    'ART ML&AI',
-    'ART DATA',
-    'VS "ЦАГ"',
-    'VS " Цифровой Факторинг"',
-    'Интернет эквайринг',
-    'VS «Класс. кредит-е ЮЛ и ИП»',
-    'VS "Collection"',
-    'Операционные процессы',
-    'Сайт Банка',
-  ]).resize());
-    return ctx.wizard.next();
-  },
-  async (ctx) => {
-    const option = ctx.message.text;
-    if (![  'ART ТРБ BAU', 
-    'ART ТРБ Premium', 
+// ART options
+const artOptions = [
+  'ART ТРБ BAU', 
+  'ART ТРБ Premium', 
   'ART ВЭД', 
   'ART БММБ Daily Banking для бизнеса',
   'ART БММБ Business Platform',
@@ -57,11 +30,50 @@ const artScene = new Scenes.WizardScene(
   'VS «Класс. кредит-е ЮЛ и ИП»',
   'VS "Collection"',
   'Операционные процессы',
-  'Сайт Банка',].includes(option)) {
-      return ctx.reply('Выберите вариант');
+  'Сайт Банка',
+];
+
+// Konkurs options
+const konkursOptions = [
+  'Правовой модуль - юрист в цифре',
+  'Факторинг-эксперт - быстрые решения', 
+  'Synergy Team - порядок вместо хаоса', 
+  'Premium Digital Office - банкинг нового уровня',
+  'FX TRB - премиум-сервис: быстро и удобно',
+  'Лояльность ТРБ - забота, которую чувствуешь',
+  'B-Invest - AI-инвестиционный помощник',
+  'Контакт-центр & CRM - скорость + забота',
+  'ЦК ВЭД & CRM - кастомный подход к каждому',
+  'LLM-бот - умный помощник, который понимает',
+  'Online Onboarding - лёгкий вход в бизнес',
+  'Core Platform Team - база цифрового будущего',
+  'Core Feature Team - лёгкое переключение компаний',
+  'Переводы в тенге - просто и быстро',
+  'Валютные договора - битва титанов',
+  'Валютный контроль - скорость и гибкость',
+  'Гос.сервисы - автоматические уведомления ',
+  'Депозиты - капитализация без боли',
+  'Конструктор кредитов - под клиента',
+  'Сервис отказов - объяснит "почему"',
+  'Скоринг решений - ПКБ BML',
+  'AI оператор - ИИ работает, мы чилим',
+];
+
+// --- Scene for Ask ART ---
+const artScene = new Scenes.WizardScene(
+  'ART_SCENE',
+  async (ctx) => {
+    await ctx.reply('Выберите вариант:', Markup.keyboard(artOptions).resize());
+    return ctx.wizard.next();
+  },
+  async (ctx) => {
+    const option = ctx.message.text;
+    if (!artOptions.includes(option)) {
+      await ctx.reply('Выберите вариант:', Markup.keyboard(artOptions).resize());
+      return; // Stay in this step
     }
     ctx.wizard.state.option = option;
-    await ctx.reply('Задайте ваш вопрос:');
+    await ctx.reply('Задайте ваш вопрос:', Markup.forceReply());
     return ctx.wizard.next();
   },
   async (ctx) => {
@@ -81,7 +93,7 @@ const artScene = new Scenes.WizardScene(
     } catch (error) {
       console.error('Error sending to n8n:', error);
     }
-    await ctx.reply('Thank you!');
+    await ctx.reply('Спасибо!');
     await ctx.reply('Back to main menu.', mainMenu);
     return ctx.scene.leave();
   }
@@ -92,60 +104,17 @@ stage.register(artScene);
 const konkursScene = new Scenes.WizardScene(
   'KONKURS_SCENE',
   async (ctx) => {
-    await ctx.reply('Выберите вариант:', Markup.keyboard([
-      'Правовой модуль - юрист в цифре',
-       'Факторинг-эксперт - быстрые решения', 
-       'Synergy Team - порядок вместо хаоса', 
-       'Premium Digital Office - банкинг нового уровня',
-       'FX TRB - премиум-сервис: быстро и удобно',
-       'Лояльность ТРБ - забота, которую чувствуешь',
-       'B-Invest - AI-инвестиционный помощник',
-       'Контакт-центр & CRM - скорость + забота',
-       'ЦК ВЭД & CRM - кастомный подход к каждому',
-       'LLM-бот - умный помощник, который понимает',
-       'Online Onboarding - лёгкий вход в бизнес',
-       'Core Platform Team - база цифрового будущего',
-       'Core Feature Team - лёгкое переключение компаний',
-       'Переводы в тенге - просто и быстро',
-       'Валютные договора - битва титанов',
-       'Валютный контроль - скорость и гибкость',
-       'Гос.сервисы - автоматические уведомления ',
-       'Депозиты - капитализация без боли',
-       'Конструктор кредитов - под клиента',
-       'Сервис отказов - объяснит "почему"',
-       'Скоринг решений - ПКБ BML',
-       'AI оператор - ИИ работает, мы чилим',
-      ]).resize());
+    await ctx.reply('Выберите вариант:', Markup.keyboard(konkursOptions).resize());
     return ctx.wizard.next();
   },
   async (ctx) => {
     const option = ctx.message.text;
-    if (![ 'Правовой модуль - юрист в цифре',
-    'Факторинг-эксперт - быстрые решения', 
-    'Synergy Team - порядок вместо хаоса', 
-    'Premium Digital Office - банкинг нового уровня',
-    'FX TRB - премиум-сервис: быстро и удобно',
-    'Лояльность ТРБ - забота, которую чувствуешь',
-    'B-Invest - AI-инвестиционный помощник',
-    'Контакт-центр & CRM - скорость + забота',
-    'ЦК ВЭД & CRM - кастомный подход к каждому',
-    'LLM-бот - умный помощник, который понимает',
-    'Online Onboarding - лёгкий вход в бизнес',
-    'Core Platform Team - база цифрового будущего',
-    'Core Feature Team - лёгкое переключение компаний',
-    'Переводы в тенге - просто и быстро',
-    'Валютные договора - битва титанов',
-    'Валютный контроль - скорость и гибкость',
-    'Гос.сервисы - автоматические уведомления ',
-    'Депозиты - капитализация без боли',
-    'Конструктор кредитов - под клиента',
-    'Сервис отказов - объяснит "почему"',
-    'Скоринг решений - ПКБ BML',
-    'AI оператор - ИИ работает, мы чилим',].includes(option)) {
-      return ctx.reply('Выберите вариант');
+    if (!konkursOptions.includes(option)) {
+      await ctx.reply('Выберите вариант:', Markup.keyboard(konkursOptions).resize());
+      return; // Stay in this step
     }
     ctx.wizard.state.option = option;
-    await ctx.reply('Задайте вопрос:');
+    await ctx.reply('Задайте вопрос:', Markup.forceReply());
     return ctx.wizard.next();
   },
   async (ctx) => {
@@ -164,7 +133,7 @@ const konkursScene = new Scenes.WizardScene(
     } catch (error) {
       console.error('Error sending to n8n:', error);
     }
-    await ctx.reply('Thank you!');
+    await ctx.reply('Спасибо!');
     await ctx.reply('Back to main menu.', mainMenu);
     return ctx.scene.leave();
   }
@@ -173,7 +142,7 @@ stage.register(konkursScene);
 
 // --- Scene for Feedback (simple) ---
 const feedbackScene = new Scenes.BaseScene('FEEDBACK_SCENE');
-feedbackScene.enter((ctx) => ctx.reply('Дайте вашу ОС:'));
+feedbackScene.enter((ctx) => ctx.reply('Дайте вашу ОС:', Markup.forceReply()));
 feedbackScene.on('text', async (ctx) => {
   const message = ctx.message.text;
   const user = ctx.from;
@@ -189,7 +158,7 @@ feedbackScene.on('text', async (ctx) => {
   } catch (error) {
     console.error('Error sending to n8n:', error);
   }
-  await ctx.reply('Thank you for your feedback!');
+  await ctx.reply('Спасибо за ОС!');
   await ctx.reply('Back to main menu.', mainMenu);
   return ctx.scene.leave();
 });
