@@ -8,17 +8,16 @@ const stage = new Scenes.Stage();
 // Main menu keyboard
 const mainMenu = Markup.keyboard([
   ['1) Задать вопрос командам в ART', '2) Задать вопрос конкурсантам'],
-  ['3) Оставить ОС по организации мероприятия']
+  ['3) Оставить ОС по организации мероприятия', '4) Голосование за лучший ART']
 ]).resize();
 
-// ART options
+// ART options (shared for questions and voting)
 const artOptions = [
   'ART «Индустриальной разработки»', 
   'ART «IT RUN»', 
   'ART «CRM»', 
   'ART «ML&AI»',
-`VS «Классическое
-  кредитование ЮЛ и ИП»`,
+  `VS «Классическое кредитование ЮЛ и ИП»`,
   'VS «Операционные процессы»',
   'VS «Операционные процессы»',
   'Внешний сайт',
@@ -35,7 +34,7 @@ const konkursOptions = [
   'Валютный контроль - Самарина Снежана',
 ];
 
-// --- Scene for Ask ART ---
+// --- Scene for Ask ART (questions) ---
 const artScene = new Scenes.WizardScene(
   'ART_SCENE',
   async (ctx) => {
@@ -63,7 +62,6 @@ const artScene = new Scenes.WizardScene(
       message: message,
       type: 'ART'
     };
-    // Send to n8n webhook (replace with your n8n URL later)
     try {
       await axios.post('https://fytch.app.n8n.cloud/webhook/telegram-bot-data', data);
     } catch (error) {
@@ -76,7 +74,7 @@ const artScene = new Scenes.WizardScene(
 );
 stage.register(artScene);
 
-// --- Scene for Ask Konkurs (similar to ART) ---
+// --- Scene for Ask Konkurs (questions) ---
 const konkursScene = new Scenes.WizardScene(
   'KONKURS_SCENE',
   async (ctx) => {
@@ -116,7 +114,7 @@ const konkursScene = new Scenes.WizardScene(
 );
 stage.register(konkursScene);
 
-// --- Scene for Feedback (simple) ---
+// --- Scene for Feedback ---
 const feedbackScene = new Scenes.BaseScene('FEEDBACK_SCENE');
 feedbackScene.enter((ctx) => ctx.reply('Дайте вашу ОС:', Markup.forceReply()));
 feedbackScene.on('text', async (ctx) => {
@@ -140,6 +138,40 @@ feedbackScene.on('text', async (ctx) => {
 });
 stage.register(feedbackScene);
 
+// --- New Scene for Voting ART ---
+const voteArtScene = new Scenes.WizardScene(
+  'VOTE_ART_SCENE',
+  async (ctx) => {
+    await ctx.reply('Выберите лучший ART для голосования:', Markup.keyboard(artOptions).resize());
+    return ctx.wizard.next();
+  },
+  async (ctx) => {
+    const option = ctx.message.text;
+    if (!artOptions.includes(option)) {
+      await ctx.reply('Выберите вариант:', Markup.keyboard(artOptions).resize());
+      return; // Stay in this step
+    }
+    const user = ctx.from;
+    const data = {
+      userId: user.id,
+      username: user.username || 'N/A',
+      firstName: user.first_name || 'N/A',
+      option: option, // This is the vote
+      message: 'Vote', // Placeholder, since no custom message
+      type: 'VOTE_ART' // New type for n8n to branch to 'голосование' sheet
+    };
+    try {
+      await axios.post('https://fytch.app.n8n.cloud/webhook/telegram-bot-data', data);
+    } catch (error) {
+      console.error('Error sending to n8n:', error);
+    }
+    await ctx.reply('Спасибо за ваш голос!');
+    await ctx.reply('Вернуться в главное меню.', mainMenu);
+    return ctx.scene.leave();
+  }
+);
+stage.register(voteArtScene);
+
 // Middleware
 bot.use(session());
 bot.use(stage.middleware());
@@ -154,6 +186,7 @@ bot.start((ctx) => ctx.reply(`🎊 Привет! Ты на Big Demo Day Bereke B
 bot.hears('1) Задать вопрос командам в ART', (ctx) => ctx.scene.enter('ART_SCENE'));
 bot.hears('2) Задать вопрос конкурсантам', (ctx) => ctx.scene.enter('KONKURS_SCENE'));
 bot.hears('3) Оставить ОС по организации мероприятия', (ctx) => ctx.scene.enter('FEEDBACK_SCENE'));
+bot.hears('4) Голосование за лучший ART', (ctx) => ctx.scene.enter('VOTE_ART_SCENE'));
 
 // Optional: Set webhook on startup (safe for cold starts)
 bot.telegram.setWebhook(`https://bereke-bot.vercel.app/bot`);  // Your domain + /bot path
