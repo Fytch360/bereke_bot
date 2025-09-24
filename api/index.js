@@ -186,7 +186,7 @@ bot.start((ctx) => ctx.reply(`🎊 Привет! Ты на Big Demo Day Bereke B
 bot.hears('1) Задать вопрос командам в ART', (ctx) => ctx.scene.enter('ART_SCENE'));
 bot.hears('2) Задать вопрос конкурсантам', (ctx) => ctx.scene.enter('KONKURS_SCENE'));
 bot.hears('3) Оставить ОС по организации мероприятия', (ctx) => ctx.scene.enter('FEEDBACK_SCENE'));
-bot.hears('4) Голосование за лучший ART', (ctx) => ctx.scene.enter('VOTE_ART_SCENE'));
+// bot.hears('4) Голосование за лучший ART', (ctx) => ctx.scene.enter('VOTE_ART_SCENE'));
 
 // Optional: Set webhook on startup (safe for cold starts)
 bot.telegram.setWebhook(`https://bereke-bot.vercel.app/bot`);  // Your domain + /bot path
