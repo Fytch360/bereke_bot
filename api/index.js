@@ -139,38 +139,38 @@ feedbackScene.on('text', async (ctx) => {
 stage.register(feedbackScene);
 
 // --- New Scene for Voting ART ---
-const voteArtScene = new Scenes.WizardScene(
-  'VOTE_ART_SCENE',
-  async (ctx) => {
-    await ctx.reply('Выберите лучший ART для голосования:', Markup.keyboard(artOptions).resize());
-    return ctx.wizard.next();
-  },
-  async (ctx) => {
-    const option = ctx.message.text;
-    if (!artOptions.includes(option)) {
-      await ctx.reply('Выберите вариант:', Markup.keyboard(artOptions).resize());
-      return; // Stay in this step
-    }
-    const user = ctx.from;
-    const data = {
-      userId: user.id,
-      username: user.username || 'N/A',
-      firstName: user.first_name || 'N/A',
-      option: option, // This is the vote
-      message: 'Vote', // Placeholder, since no custom message
-      type: 'VOTE_ART' // New type for n8n to branch to 'голосование' sheet
-    };
-    try {
-      await axios.post('https://fytch.app.n8n.cloud/webhook/telegram-bot-data', data);
-    } catch (error) {
-      console.error('Error sending to n8n:', error);
-    }
-    await ctx.reply('Спасибо за ваш голос!');
-    await ctx.reply('Вернуться в главное меню.', mainMenu);
-    return ctx.scene.leave();
-  }
-);
-stage.register(voteArtScene);
+// const voteArtScene = new Scenes.WizardScene(
+//   'VOTE_ART_SCENE',
+//   async (ctx) => {
+//     await ctx.reply('Выберите лучший ART для голосования:', Markup.keyboard(artOptions).resize());
+//     return ctx.wizard.next();
+//   },
+//   async (ctx) => {
+//     const option = ctx.message.text;
+//     if (!artOptions.includes(option)) {
+//       await ctx.reply('Выберите вариант:', Markup.keyboard(artOptions).resize());
+//       return; // Stay in this step
+//     }
+//     const user = ctx.from;
+//     const data = {
+//       userId: user.id,
+//       username: user.username || 'N/A',
+//       firstName: user.first_name || 'N/A',
+//       option: option, // This is the vote
+//       message: 'Vote', // Placeholder, since no custom message
+//       type: 'VOTE_ART' // New type for n8n to branch to 'голосование' sheet
+//     };
+//     try {
+//       await axios.post('https://fytch.app.n8n.cloud/webhook/telegram-bot-data', data);
+//     } catch (error) {
+//       console.error('Error sending to n8n:', error);
+//     }
+//     await ctx.reply('Спасибо за ваш голос!');
+//     await ctx.reply('Вернуться в главное меню.', mainMenu);
+//     return ctx.scene.leave();
+//   }
+// );
+// stage.register(voteArtScene);
 
 // Middleware
 bot.use(session());
